@@ -138,24 +138,25 @@ export default function Home() {
               {/* Sort Dropdown */}
               {showSortMenu && (
                 <div
-                  className="absolute right-0 mt-2 rounded-lg shadow-xl z-20 overflow-hidden"
+                  className="absolute right-0 mt-2 shadow-xl z-20 p-1"
                   style={{
                     backgroundColor: colors.primary,
-                    width: '105px',
+                    width: '113px',
+                    borderRadius: '12px',
                   }}
                 >
                   {/* Red header with "Sort by:" */}
-                  <div className="px-5 py-4">
+                  <div className="px-4 pt-4 pb-2">
                     <h3 className="text-sm font-bold text-white">
                       Sort by:
                     </h3>
                   </div>
 
                   {/* White content area */}
-                  <div className="bg-white px-5 py-4 space-y-4">
+                  <div className="bg-white mx-1 mb-1 px-1 py-1 space-y-4" style={{ borderRadius: '8px' }}>
                     <button
                       onClick={() => handleSortChange('number')}
-                      className="w-full text-left flex items-center gap-3"
+                      className="w-full text-left flex items-center gap-2 px-3 py-2"
                     >
                       <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
                         sortBy === 'number' ? 'border-red-600' : 'border-gray-300'
@@ -164,13 +165,13 @@ export default function Home() {
                           <div className="w-2 h-2 rounded-full" style={{ backgroundColor: colors.primary }}></div>
                         )}
                       </div>
-                      <span className={`text-sm ${sortBy === 'number' ? 'font-semibold' : 'font-normal'}`} style={{ color: colors.dark }}>
+                      <span className={`text-sm whitespace-nowrap ${sortBy === 'number' ? 'font-semibold' : 'font-normal'}`} style={{ color: colors.dark }}>
                         Number
                       </span>
                     </button>
                     <button
                       onClick={() => handleSortChange('name')}
-                      className="w-full text-left flex items-center gap-3"
+                      className="w-full text-left flex items-center gap-2 px-3 py-2"
                     >
                       <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
                         sortBy === 'name' ? 'border-red-600' : 'border-gray-300'
@@ -179,7 +180,7 @@ export default function Home() {
                           <div className="w-2 h-2 rounded-full" style={{ backgroundColor: colors.primary }}></div>
                         )}
                       </div>
-                      <span className={`text-sm ${sortBy === 'name' ? 'font-semibold' : 'font-normal'}`} style={{ color: colors.dark }}>
+                      <span className={`text-sm whitespace-nowrap ${sortBy === 'name' ? 'font-semibold' : 'font-normal'}`} style={{ color: colors.dark }}>
                         Name
                       </span>
                     </button>
