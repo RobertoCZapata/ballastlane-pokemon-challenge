@@ -27,69 +27,75 @@ export function usePokemons(params: UsePokemonsParams = {}) {
   const sortBy = params.sortBy;
   const sortOrder = params.sortOrder || 'asc';
 
-  const fetchPokemons = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
+  // Reset pagination when search or sort changes
+  useEffect(() => {
+    setOffset(0);
+  }, [search, sortBy, sortOrder]);
 
-    try {
-      const queryParams = new URLSearchParams({
-        limit: limit.toString(),
-        offset: offset.toString(),
-      });
+  // Fetch pokemons when dependencies change
+  useEffect(() => {
+    const fetchPokemons = async () => {
+      setIsLoading(true);
+      setError(null);
 
-      if (search) {
-        queryParams.append('search', search);
+      try {
+        const queryParams = new URLSearchParams({
+          limit: limit.toString(),
+          offset: offset.toString(),
+        });
+
+        if (search) {
+          queryParams.append('search', search);
+        }
+
+        if (sortBy) {
+          queryParams.append('sortBy', sortBy);
+          queryParams.append('sortOrder', sortOrder);
+        }
+
+        const response = await fetch(`/api/pokemons?${queryParams.toString()}`);
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch Pokemon');
+        }
+
+        const result = await response.json();
+
+        if (result.success) {
+          setData(result.data);
+        } else {
+          setError(result.message || 'Failed to fetch Pokemon');
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Network error');
+        console.error('Error fetching Pokemon:', err);
+      } finally {
+        setIsLoading(false);
       }
+    };
 
-      if (sortBy) {
-        queryParams.append('sortBy', sortBy);
-        queryParams.append('sortOrder', sortOrder);
-      }
-
-      const response = await fetch(`/api/pokemons?${queryParams.toString()}`);
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch Pokemon');
-      }
-
-      const result = await response.json();
-
-      if (result.success) {
-        setData(result.data);
-      } else {
-        setError(result.message || 'Failed to fetch Pokemon');
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Network error');
-      console.error('Error fetching Pokemon:', err);
-    } finally {
-      setIsLoading(false);
-    }
+    fetchPokemons();
   }, [limit, offset, search, sortBy, sortOrder]);
 
-  useEffect(() => {
-    fetchPokemons();
-  }, [fetchPokemons]);
-
-  const nextPage = () => {
+  const nextPage = useCallback(() => {
     if (data?.next) {
-      setOffset(offset + limit);
+      setOffset((prev) => prev + limit);
     }
-  };
+  }, [data?.next, limit]);
 
-  const previousPage = () => {
-    if (data?.previous && offset > 0) {
-      setOffset(Math.max(0, offset - limit));
+  const previousPage = useCallback(() => {
+    if (data?.previous) {
+      setOffset((prev) => Math.max(0, prev - limit));
     }
-  };
+  }, [data?.previous, limit]);
 
-  const goToPage = (page: number) => {
+  const goToPage = useCallback((page: number) => {
     setOffset(page * limit);
-  };
+  }, [limit]);
 
-  const resetPagination = () => {
+  const resetPagination = useCallback(() => {
     setOffset(0);
-  };
+  }, []);
 
   return {
     pokemons: data?.results || [],
