@@ -11,7 +11,8 @@ import { PokemonCard } from '@/presentation/components/PokemonCard';
 import { usePokemons } from '@/presentation/hooks/usePokemons';
 import { useAuth } from '@/presentation/hooks/useAuth';
 import { SortField, SortOrder } from '@/core/entities/ApiResponse';
-import { colors } from '@/lib/theme';
+import { colors, typography } from '@/lib/theme';
+import { Pokeball, SearchIcon } from '@/icons';
 
 export default function Home() {
   const router = useRouter();
@@ -71,22 +72,70 @@ export default function Home() {
         style={{ backgroundColor: colors.primary }}
       >
         <div className="max-w-md mx-auto px-4 py-4">
-          <div className="flex items-center justify-between mb-4">
-            {/* Logo */}
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-                <div className="w-6 h-6 rounded-full border-2 border-gray-800" style={{ borderTopColor: colors.primary, borderBottomColor: 'white' }}></div>
-              </div>
-              <h1 className="text-2xl font-bold text-white">Pokédex</h1>
+          {/* Logo */}
+          <div className="flex items-center gap-3 mb-4">
+            <Pokeball width={24} height={24} className="text-white" />
+            <h1
+              className="font-bold text-white"
+              style={{
+                fontSize: typography.headline.fontSize,
+                lineHeight: typography.headline.lineHeight,
+                fontWeight: typography.headline.fontWeight,
+              }}
+            >
+              Pokédex
+            </h1>
+          </div>
+
+          {/* Search Bar with Sort Button */}
+          <div className="flex items-center gap-3">
+            <div className="relative flex-1">
+            <label htmlFor="pokemon-search" className="sr-only">
+              Search Pokemon
+            </label>
+            <div className="absolute left-4 top-1/2 -translate-y-1/2">
+              <SearchIcon width={20} height={20} style={{ color: colors.primary }} />
+            </div>
+            <input
+              id="pokemon-search"
+              type="search"
+              placeholder="Search"
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              className="w-full py-3 pl-12 pr-12 rounded-full bg-white shadow-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-600"
+              aria-label="Search Pokemon by name or number"
+            />
+            {searchInput && (
+              <button
+                onClick={clearSearch}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                aria-label="Clear search"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={2}
+                  stroke="currentColor"
+                  className="w-5 h-5"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            )}
             </div>
 
             {/* Sort Button */}
             <div className="relative">
               <button
                 onClick={() => setShowSortMenu(!showSortMenu)}
-                className="w-10 h-10 bg-white rounded-full flex items-center justify-center font-bold text-lg hover:bg-gray-100 transition-colors"
+                className="w-10 h-10 bg-white rounded-full flex items-center justify-center font-bold hover:bg-gray-100 transition-colors flex-shrink-0"
                 aria-label="Sort options"
-                style={{ color: colors.primary }}
+                style={{ color: colors.primary, fontSize: '20px', lineHeight: '1' }}
               >
                 #
               </button>
@@ -132,62 +181,6 @@ export default function Home() {
                 </div>
               )}
             </div>
-          </div>
-
-          {/* Search Bar */}
-          <div className="relative">
-            <label htmlFor="pokemon-search" className="sr-only">
-              Search Pokemon
-            </label>
-            <div className="absolute left-4 top-1/2 -translate-y-1/2">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={2}
-                stroke="currentColor"
-                className="w-5 h-5"
-                style={{ color: colors.primary }}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-                />
-              </svg>
-            </div>
-            <input
-              id="pokemon-search"
-              type="search"
-              placeholder="Search"
-              value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
-              className="w-full py-3 pl-12 pr-12 rounded-full bg-white shadow-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2"
-              style={{ focusRingColor: colors.primary }}
-              aria-label="Search Pokemon by name or number"
-            />
-            {searchInput && (
-              <button
-                onClick={clearSearch}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                aria-label="Clear search"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={2}
-                  stroke="currentColor"
-                  className="w-5 h-5"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-            )}
           </div>
         </div>
       </header>
