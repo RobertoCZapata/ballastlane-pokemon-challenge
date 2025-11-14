@@ -12,9 +12,10 @@ import { colors } from '@/lib/theme';
 
 interface PokemonCardProps {
   pokemon: PokemonListItem;
+  priority?: boolean;
 }
 
-export function PokemonCard({ pokemon }: PokemonCardProps) {
+export function PokemonCard({ pokemon, priority = false }: PokemonCardProps) {
   return (
     <article>
       <Link
@@ -30,7 +31,7 @@ export function PokemonCard({ pokemon }: PokemonCardProps) {
               width={80}
               height={80}
               className="object-contain"
-              loading="lazy"
+              priority={priority}
             />
             {/* Pokemon Number Badge */}
             <div

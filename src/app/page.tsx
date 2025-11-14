@@ -222,8 +222,12 @@ export default function Home() {
         {/* Pokemon Grid - 3 columns like Figma */}
         {!isLoading && pokemons.length > 0 && (
           <section aria-label="Pokemon gallery" className="grid grid-cols-3 gap-2">
-            {pokemons.map((pokemon) => (
-              <PokemonCard key={pokemon.id} pokemon={pokemon} />
+            {pokemons.map((pokemon, index) => (
+              <PokemonCard
+                key={pokemon.id}
+                pokemon={pokemon}
+                priority={index < 6}
+              />
             ))}
           </section>
         )}
