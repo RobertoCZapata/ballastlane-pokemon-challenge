@@ -1,6 +1,6 @@
 /**
- * Home Page - Pokemon List
- * Main page showing paginated Pokemon list with search and sort
+ * Home Page - Pokemon List (Figma Design)
+ * Main page following exact Figma specifications
  */
 
 'use client';
@@ -11,6 +11,7 @@ import { PokemonCard } from '@/presentation/components/PokemonCard';
 import { usePokemons } from '@/presentation/hooks/usePokemons';
 import { useAuth } from '@/presentation/hooks/useAuth';
 import { SortField, SortOrder } from '@/core/entities/ApiResponse';
+import { colors } from '@/lib/theme';
 
 export default function Home() {
   const router = useRouter();
@@ -19,6 +20,7 @@ export default function Home() {
   const [searchInput, setSearchInput] = useState('');
   const [sortBy, setSortBy] = useState<SortField>('number');
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
+  const [showSortMenu, setShowSortMenu] = useState(false);
 
   const {
     pokemons,
@@ -36,7 +38,7 @@ export default function Home() {
     search,
     sortBy,
     sortOrder,
-    limit: 20,
+    limit: 21, // 3x7 grid like Figma
   });
 
   // Debounce search input
@@ -50,138 +52,176 @@ export default function Home() {
   }, [searchInput, resetPagination]);
 
   const handleSortChange = (field: SortField) => {
-    if (sortBy === field) {
-      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortBy(field);
-      setSortOrder('asc');
-    }
+    setSortBy(field);
+    setSortOrder('asc');
+    setShowSortMenu(false);
     resetPagination();
   };
 
-  const handleLogout = () => {
-    logout();
-    router.push('/login');
+  const clearSearch = () => {
+    setSearchInput('');
+    setSearch('');
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
-              Pokémon App
-            </h1>
-            <button
-              onClick={handleLogout}
-              className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-sm sm:text-base"
-              aria-label="Logout from application"
-            >
-              Logout
-            </button>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen" style={{ backgroundColor: colors.background }}>
+      {/* Header - Figma Red */}
+      <header
+        className="sticky top-0 z-10 shadow-md"
+        style={{ backgroundColor: colors.primary }}
+      >
+        <div className="max-w-md mx-auto px-4 py-4">
+          <div className="flex items-center justify-between mb-4">
+            {/* Logo */}
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
+                <div className="w-6 h-6 rounded-full border-2 border-gray-800" style={{ borderTopColor: colors.primary, borderBottomColor: 'white' }}></div>
+              </div>
+              <h1 className="text-2xl font-bold text-white">Pokédex</h1>
+            </div>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" role="main">
-        {/* Search and Sort Controls */}
-        <section aria-label="Pokemon filters and search" className="mb-8 space-y-4">
+            {/* Sort Button */}
+            <div className="relative">
+              <button
+                onClick={() => setShowSortMenu(!showSortMenu)}
+                className="w-10 h-10 bg-white rounded-full flex items-center justify-center font-bold text-lg hover:bg-gray-100 transition-colors"
+                aria-label="Sort options"
+                style={{ color: colors.primary }}
+              >
+                #
+              </button>
+
+              {/* Sort Dropdown */}
+              {showSortMenu && (
+                <div
+                  className="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-xl py-2 z-20"
+                >
+                  <div className="px-4 py-2 text-sm font-semibold" style={{ color: colors.medium }}>
+                    Sort by:
+                  </div>
+                  <button
+                    onClick={() => handleSortChange('number')}
+                    className={`w-full px-4 py-2 text-left hover:bg-gray-100 flex items-center gap-2 ${
+                      sortBy === 'number' ? 'font-bold' : ''
+                    }`}
+                  >
+                    <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
+                      sortBy === 'number' ? 'border-red-600' : 'border-gray-300'
+                    }`}>
+                      {sortBy === 'number' && (
+                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: colors.primary }}></div>
+                      )}
+                    </div>
+                    Number
+                  </button>
+                  <button
+                    onClick={() => handleSortChange('name')}
+                    className={`w-full px-4 py-2 text-left hover:bg-gray-100 flex items-center gap-2 ${
+                      sortBy === 'name' ? 'font-bold' : ''
+                    }`}
+                  >
+                    <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
+                      sortBy === 'name' ? 'border-red-600' : 'border-gray-300'
+                    }`}>
+                      {sortBy === 'name' && (
+                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: colors.primary }}></div>
+                      )}
+                    </div>
+                    Name
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+
           {/* Search Bar */}
           <div className="relative">
             <label htmlFor="pokemon-search" className="sr-only">
               Search Pokemon
             </label>
+            <div className="absolute left-4 top-1/2 -translate-y-1/2">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+                stroke="currentColor"
+                className="w-5 h-5"
+                style={{ color: colors.primary }}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+                />
+              </svg>
+            </div>
             <input
               id="pokemon-search"
               type="search"
-              placeholder="Search Pokemon by name or number..."
+              placeholder="Search"
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
-              className="w-full px-4 py-3 pl-12 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition text-gray-900"
+              className="w-full py-3 pl-12 pr-12 rounded-full bg-white shadow-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2"
+              style={{ focusRingColor: colors.primary }}
               aria-label="Search Pokemon by name or number"
             />
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-6 h-6 absolute left-3 top-3.5 text-gray-400"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-              />
-            </svg>
+            {searchInput && (
+              <button
+                onClick={clearSearch}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                aria-label="Clear search"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={2}
+                  stroke="currentColor"
+                  className="w-5 h-5"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            )}
           </div>
+        </div>
+      </header>
 
-          {/* Sort Controls */}
-          <nav aria-label="Sort controls" className="flex flex-wrap gap-2">
-            <span className="text-sm text-gray-600 self-center font-medium">
-              Sort by:
-            </span>
-            <button
-              onClick={() => handleSortChange('name')}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                sortBy === 'name'
-                  ? 'bg-purple-600 text-white'
-                  : 'bg-white text-gray-700 hover:bg-gray-100'
-              }`}
-              aria-pressed={sortBy === 'name'}
-              aria-label={`Sort by name ${sortBy === 'name' ? (sortOrder === 'asc' ? 'ascending' : 'descending') : ''}`}
-            >
-              Name {sortBy === 'name' && (sortOrder === 'asc' ? '↑' : '↓')}
-            </button>
-            <button
-              onClick={() => handleSortChange('number')}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                sortBy === 'number'
-                  ? 'bg-purple-600 text-white'
-                  : 'bg-white text-gray-700 hover:bg-gray-100'
-              }`}
-              aria-pressed={sortBy === 'number'}
-              aria-label={`Sort by number ${sortBy === 'number' ? (sortOrder === 'asc' ? 'ascending' : 'descending') : ''}`}
-            >
-              Number {sortBy === 'number' && (sortOrder === 'asc' ? '↑' : '↓')}
-            </button>
-          </nav>
-
-          {/* Results Count */}
-          <p className="text-sm text-gray-600" role="status" aria-live="polite">
-            Showing {pokemons.length} of {count} Pokemon
-          </p>
-        </section>
-
+      {/* Main Content */}
+      <main className="max-w-md mx-auto px-4 py-6" role="main">
         {/* Error State */}
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4">
-            <p>{error}</p>
+            <p className="text-sm">{error}</p>
           </div>
         )}
 
         {/* Loading State */}
         {isLoading && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {[...Array(8)].map((_, i) => (
+          <div className="grid grid-cols-3 gap-3">
+            {[...Array(9)].map((_, i) => (
               <div
                 key={i}
-                className="bg-white rounded-xl shadow-md overflow-hidden animate-pulse"
+                className="bg-white rounded-lg overflow-hidden animate-pulse"
               >
-                <div className="bg-gray-200 h-48" />
-                <div className="p-4">
-                  <div className="h-6 bg-gray-200 rounded" />
+                <div className="bg-gray-200 aspect-square" />
+                <div className="p-2">
+                  <div className="h-3 bg-gray-200 rounded mb-1" />
+                  <div className="h-4 bg-gray-200 rounded" />
                 </div>
               </div>
             ))}
           </div>
         )}
 
-        {/* Pokemon Grid */}
+        {/* Pokemon Grid - 3 columns like Figma */}
         {!isLoading && pokemons.length > 0 && (
-          <section aria-label="Pokemon gallery" className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <section aria-label="Pokemon gallery" className="grid grid-cols-3 gap-2">
             {pokemons.map((pokemon) => (
               <PokemonCard key={pokemon.id} pokemon={pokemon} />
             ))}
@@ -191,28 +231,30 @@ export default function Home() {
         {/* No Results */}
         {!isLoading && pokemons.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-gray-500 text-lg">No Pokemon found</p>
+            <p className="text-gray-500">No Pokemon found</p>
           </div>
         )}
 
         {/* Pagination */}
-        {!isLoading && pokemons.length > 0 && (
-          <nav aria-label="Pagination" className="mt-8 flex items-center justify-center gap-2">
+        {!isLoading && pokemons.length > 0 && totalPages > 1 && (
+          <nav aria-label="Pagination" className="mt-6 flex items-center justify-center gap-2">
             <button
               onClick={previousPage}
               disabled={!hasPrevious}
-              className="px-4 py-2 bg-white rounded-lg font-medium text-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="px-4 py-2 bg-white rounded-lg font-medium hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm"
+              style={{ color: colors.dark }}
               aria-label="Go to previous page"
             >
               Previous
             </button>
-            <span className="px-4 py-2 text-gray-700" aria-current="page">
-              Page {currentPage + 1} of {totalPages}
+            <span className="px-4 py-2" style={{ color: colors.medium }}>
+              {currentPage + 1} / {totalPages}
             </span>
             <button
               onClick={nextPage}
               disabled={!hasNext}
-              className="px-4 py-2 bg-white rounded-lg font-medium text-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="px-4 py-2 bg-white rounded-lg font-medium hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm"
+              style={{ color: colors.dark }}
               aria-label="Go to next page"
             >
               Next
