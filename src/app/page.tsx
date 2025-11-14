@@ -76,6 +76,7 @@ export default function Home() {
             <button
               onClick={handleLogout}
               className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-sm sm:text-base"
+              aria-label="Logout from application"
             >
               Logout
             </button>
@@ -83,17 +84,22 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" role="main">
         {/* Search and Sort Controls */}
-        <div className="mb-8 space-y-4">
+        <section aria-label="Pokemon filters and search" className="mb-8 space-y-4">
           {/* Search Bar */}
           <div className="relative">
+            <label htmlFor="pokemon-search" className="sr-only">
+              Search Pokemon
+            </label>
             <input
-              type="text"
+              id="pokemon-search"
+              type="search"
               placeholder="Search Pokemon by name or number..."
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               className="w-full px-4 py-3 pl-12 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition text-gray-900"
+              aria-label="Search Pokemon by name or number"
             />
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -102,6 +108,7 @@ export default function Home() {
               strokeWidth={1.5}
               stroke="currentColor"
               className="w-6 h-6 absolute left-3 top-3.5 text-gray-400"
+              aria-hidden="true"
             >
               <path
                 strokeLinecap="round"
@@ -112,7 +119,7 @@ export default function Home() {
           </div>
 
           {/* Sort Controls */}
-          <div className="flex flex-wrap gap-2">
+          <nav aria-label="Sort controls" className="flex flex-wrap gap-2">
             <span className="text-sm text-gray-600 self-center font-medium">
               Sort by:
             </span>
@@ -123,6 +130,8 @@ export default function Home() {
                   ? 'bg-purple-600 text-white'
                   : 'bg-white text-gray-700 hover:bg-gray-100'
               }`}
+              aria-pressed={sortBy === 'name'}
+              aria-label={`Sort by name ${sortBy === 'name' ? (sortOrder === 'asc' ? 'ascending' : 'descending') : ''}`}
             >
               Name {sortBy === 'name' && (sortOrder === 'asc' ? '↑' : '↓')}
             </button>
@@ -133,16 +142,18 @@ export default function Home() {
                   ? 'bg-purple-600 text-white'
                   : 'bg-white text-gray-700 hover:bg-gray-100'
               }`}
+              aria-pressed={sortBy === 'number'}
+              aria-label={`Sort by number ${sortBy === 'number' ? (sortOrder === 'asc' ? 'ascending' : 'descending') : ''}`}
             >
               Number {sortBy === 'number' && (sortOrder === 'asc' ? '↑' : '↓')}
             </button>
-          </div>
+          </nav>
 
           {/* Results Count */}
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-gray-600" role="status" aria-live="polite">
             Showing {pokemons.length} of {count} Pokemon
           </p>
-        </div>
+        </section>
 
         {/* Error State */}
         {error && (
@@ -170,11 +181,11 @@ export default function Home() {
 
         {/* Pokemon Grid */}
         {!isLoading && pokemons.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <section aria-label="Pokemon gallery" className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {pokemons.map((pokemon) => (
               <PokemonCard key={pokemon.id} pokemon={pokemon} />
             ))}
-          </div>
+          </section>
         )}
 
         {/* No Results */}
@@ -186,25 +197,27 @@ export default function Home() {
 
         {/* Pagination */}
         {!isLoading && pokemons.length > 0 && (
-          <div className="mt-8 flex items-center justify-center gap-2">
+          <nav aria-label="Pagination" className="mt-8 flex items-center justify-center gap-2">
             <button
               onClick={previousPage}
               disabled={!hasPrevious}
               className="px-4 py-2 bg-white rounded-lg font-medium text-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              aria-label="Go to previous page"
             >
               Previous
             </button>
-            <span className="px-4 py-2 text-gray-700">
+            <span className="px-4 py-2 text-gray-700" aria-current="page">
               Page {currentPage + 1} of {totalPages}
             </span>
             <button
               onClick={nextPage}
               disabled={!hasNext}
               className="px-4 py-2 bg-white rounded-lg font-medium text-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              aria-label="Go to next page"
             >
               Next
             </button>
-          </div>
+          </nav>
         )}
       </main>
     </div>
