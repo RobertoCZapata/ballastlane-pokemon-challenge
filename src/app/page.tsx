@@ -6,17 +6,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { PokemonCard } from '@/presentation/components/PokemonCard';
 import { usePokemons } from '@/presentation/hooks/usePokemons';
-import { useAuth } from '@/presentation/hooks/useAuth';
 import { SortField, SortOrder } from '@/core/entities/ApiResponse';
 import { colors, typography } from '@/lib/theme';
 import { Pokeball, SearchIcon } from '@/icons';
 
 export default function Home() {
-  const router = useRouter();
-  const { logout } = useAuth();
   const [search, setSearch] = useState('');
   const [searchInput, setSearchInput] = useState('');
   const [sortBy, setSortBy] = useState<SortField>('number');
@@ -25,7 +21,6 @@ export default function Home() {
 
   const {
     pokemons,
-    count,
     isLoading,
     error,
     nextPage,
@@ -143,41 +138,52 @@ export default function Home() {
               {/* Sort Dropdown */}
               {showSortMenu && (
                 <div
-                  className="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-xl py-2 z-20"
+                  className="absolute right-0 mt-2 rounded-lg shadow-xl z-20 overflow-hidden"
+                  style={{
+                    backgroundColor: colors.primary,
+                    width: '105px',
+                  }}
                 >
-                  <div className="px-4 py-2 text-sm font-semibold" style={{ color: colors.medium }}>
-                    Sort by:
+                  {/* Red header with "Sort by:" */}
+                  <div className="px-5 py-4">
+                    <h3 className="text-sm font-bold text-white">
+                      Sort by:
+                    </h3>
                   </div>
-                  <button
-                    onClick={() => handleSortChange('number')}
-                    className={`w-full px-4 py-2 text-left hover:bg-gray-100 flex items-center gap-2 ${
-                      sortBy === 'number' ? 'font-bold' : ''
-                    }`}
-                  >
-                    <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
-                      sortBy === 'number' ? 'border-red-600' : 'border-gray-300'
-                    }`}>
-                      {sortBy === 'number' && (
-                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: colors.primary }}></div>
-                      )}
-                    </div>
-                    Number
-                  </button>
-                  <button
-                    onClick={() => handleSortChange('name')}
-                    className={`w-full px-4 py-2 text-left hover:bg-gray-100 flex items-center gap-2 ${
-                      sortBy === 'name' ? 'font-bold' : ''
-                    }`}
-                  >
-                    <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
-                      sortBy === 'name' ? 'border-red-600' : 'border-gray-300'
-                    }`}>
-                      {sortBy === 'name' && (
-                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: colors.primary }}></div>
-                      )}
-                    </div>
-                    Name
-                  </button>
+
+                  {/* White content area */}
+                  <div className="bg-white px-5 py-4 space-y-4">
+                    <button
+                      onClick={() => handleSortChange('number')}
+                      className="w-full text-left flex items-center gap-3"
+                    >
+                      <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                        sortBy === 'number' ? 'border-red-600' : 'border-gray-300'
+                      }`}>
+                        {sortBy === 'number' && (
+                          <div className="w-2 h-2 rounded-full" style={{ backgroundColor: colors.primary }}></div>
+                        )}
+                      </div>
+                      <span className={`text-sm ${sortBy === 'number' ? 'font-semibold' : 'font-normal'}`} style={{ color: colors.dark }}>
+                        Number
+                      </span>
+                    </button>
+                    <button
+                      onClick={() => handleSortChange('name')}
+                      className="w-full text-left flex items-center gap-3"
+                    >
+                      <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                        sortBy === 'name' ? 'border-red-600' : 'border-gray-300'
+                      }`}>
+                        {sortBy === 'name' && (
+                          <div className="w-2 h-2 rounded-full" style={{ backgroundColor: colors.primary }}></div>
+                        )}
+                      </div>
+                      <span className={`text-sm ${sortBy === 'name' ? 'font-semibold' : 'font-normal'}`} style={{ color: colors.dark }}>
+                        Name
+                      </span>
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
