@@ -128,9 +128,9 @@ export default function Home() {
             <div className="relative">
               <button
                 onClick={() => setShowSortMenu(!showSortMenu)}
-                className="w-10 h-10 bg-white rounded-full flex items-center justify-center font-bold hover:bg-gray-100 transition-colors flex-shrink-0"
+                className="w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors flex-shrink-0"
                 aria-label="Sort options"
-                style={{ color: colors.primary, fontSize: '20px', lineHeight: '1' }}
+                style={{ color: colors.primary, fontSize: '20px', lineHeight: '1', fontWeight: 'normal' }}
               >
                 #
               </button>
@@ -141,7 +141,7 @@ export default function Home() {
                   className="absolute right-0 mt-2 shadow-xl z-20 p-1"
                   style={{
                     backgroundColor: colors.primary,
-                    width: '113px',
+                    width: '135px',
                     borderRadius: '12px',
                   }}
                 >
