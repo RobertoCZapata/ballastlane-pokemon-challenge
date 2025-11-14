@@ -3,47 +3,38 @@
  * Shows detailed information about a specific Pokemon
  */
 
-'use client';
-
-import { useRouter } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import Image from 'next/image';
-import { usePokemonDetail } from '@/presentation/hooks/usePokemonDetail';
 import { colors, getTypeColor } from '@/lib/theme';
+import { BackButton } from '@/presentation/components/BackButton';
 
 interface PageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
-export default function PokemonDetailPage({ params }: PageProps) {
-  const router = useRouter();
-  const { pokemon, isLoading, error } = usePokemonDetail(params.id);
+async function getPokemonDetail(id: string) {
+  try {
+    // Use the API client directly instead of fetching from the route
+    const { GetPokemonDetailUseCase } = await import('@/core/usecases/GetPokemonDetail');
+    const { PokeApiClient } = await import('@/infrastructure/api/PokeApiClient');
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50">
-        <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-gray-300 border-t-purple-600"></div>
-          <p className="mt-4 text-gray-600">Loading Pokemon...</p>
-        </div>
-      </div>
-    );
+    const pokeApiClient = new PokeApiClient();
+    const getPokemonDetailUseCase = new GetPokemonDetailUseCase(pokeApiClient);
+
+    const pokemon = await getPokemonDetailUseCase.execute(parseInt(id, 10));
+    return pokemon;
+  } catch (error) {
+    console.error('Error fetching pokemon:', error);
+    return null;
   }
+}
 
-  if (error || !pokemon) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50">
-        <div className="text-center p-8">
-          <h1 className="text-2xl font-bold text-gray-800 mb-4">Pokemon not found</h1>
-          <button
-            onClick={() => router.push('/')}
-            className="px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
-            style={{ backgroundColor: colors.primary }}
-          >
-            Go Back Home
-          </button>
-        </div>
-      </div>
-    );
+export default async function PokemonDetailPage({ params }: PageProps) {
+  const { id } = await params;
+  const pokemon = await getPokemonDetail(id);
+
+  if (!pokemon) {
+    notFound();
   }
 
   const mainType = pokemon.types[0]?.type.name || 'normal';
@@ -58,27 +49,7 @@ export default function PokemonDetailPage({ params }: PageProps) {
       >
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between mb-4">
-            <button
-              onClick={() => router.push('/')}
-              className="flex items-center gap-2 hover:opacity-80 transition-opacity"
-              aria-label="Go back to home"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={2}
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M15.75 19.5L8.25 12l7.5-7.5"
-                />
-              </svg>
-              <span className="font-semibold">Back</span>
-            </button>
+            <BackButton />
             <span className="text-2xl font-bold">
               #{pokemon.id.toString().padStart(3, '0')}
             </span>
