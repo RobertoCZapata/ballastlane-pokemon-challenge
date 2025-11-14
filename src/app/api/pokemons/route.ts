@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          message: validation.error.errors[0].message,
+          message: validation.error.issues[0].message,
         },
         { status: 400 }
       );

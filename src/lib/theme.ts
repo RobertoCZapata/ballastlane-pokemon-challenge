@@ -16,7 +16,7 @@ export const colors = {
 
   // Pokemon Types
   bug: '#A7B723',
-  dark: '#75574C',
+  darkType: '#75574C',
   dragon: '#7037FF',
   electric: '#F9CF30',
   fairy: '#E69EAC',
@@ -65,6 +65,26 @@ export const typography = {
 
 // Helper function to get Pokemon type color
 export function getTypeColor(type: string): string {
-  const typeLower = type.toLowerCase() as keyof typeof colors;
-  return colors[typeLower] || colors.normal;
+  const typeLower = type.toLowerCase();
+  const typeMap: Record<string, string> = {
+    bug: colors.bug,
+    dark: colors.darkType,
+    dragon: colors.dragon,
+    electric: colors.electric,
+    fairy: colors.fairy,
+    fighting: colors.fighting,
+    fire: colors.fire,
+    flying: colors.flying,
+    ghost: colors.ghost,
+    normal: colors.normal,
+    grass: colors.grass,
+    ground: colors.ground,
+    ice: colors.ice,
+    poison: colors.poison,
+    psychic: colors.psychic,
+    rock: colors.rock,
+    steel: colors.steel,
+    water: colors.water,
+  };
+  return typeMap[typeLower] || colors.normal;
 }
