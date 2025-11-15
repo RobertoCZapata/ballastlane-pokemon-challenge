@@ -41,72 +41,100 @@ export default async function PokemonDetailPage({ params }: PageProps) {
   const typeColor = getTypeColor(mainType);
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: colors.background }}>
-      {/* Header */}
-      <header
-        className="text-white relative overflow-hidden"
-        style={{ backgroundColor: typeColor }}
-      >
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center justify-between mb-4">
-            <BackButton />
-            <span className="text-2xl font-bold">
-              #{pokemon.id.toString().padStart(3, '0')}
-            </span>
+    <div className="min-h-screen flex justify-center" style={{ backgroundColor: colors.background, padding: '4px' }}>
+      <div style={{ maxWidth: '360px', width: '100%' }}>
+        {/* Header */}
+        <header
+          className="text-white relative"
+          style={{
+            backgroundColor: typeColor,
+            borderBottomLeftRadius: '8px',
+            borderBottomRightRadius: '8px',
+            paddingBottom: '80px',
+            overflow: 'visible'
+          }}
+        >
+          <div style={{ padding: '16px 8px 0 8px', overflow: 'hidden' }}>
+            <div className="flex items-center justify-between mb-4">
+              <BackButton />
+              <span className="text-2xl font-bold">
+                #{pokemon.id.toString().padStart(3, '0')}
+              </span>
+            </div>
+
+            <h1 className="text-4xl font-bold capitalize mb-4">{pokemon.name}</h1>
+
+            {/* Decorative circles */}
+            <div
+              className="absolute top-4 right-4 w-32 h-32 rounded-full opacity-10"
+              style={{ backgroundColor: 'white' }}
+            ></div>
+            <div
+              className="absolute bottom-4 left-4 w-24 h-24 rounded-full opacity-10"
+              style={{ backgroundColor: 'white' }}
+            ></div>
           </div>
 
-          <h1 className="text-4xl font-bold capitalize mb-4">{pokemon.name}</h1>
+          {/* Pokemon Image - Overlapping */}
+          <div className="absolute bottom-0 left-0 right-0 flex justify-center" style={{ transform: 'translateY(50%)', zIndex: 10 }}>
+            <div className="relative w-64 h-64">
+              <Image
+                src={
+                  pokemon.sprites.other?.['official-artwork']?.front_default ||
+                  pokemon.sprites.front_default ||
+                  ''
+                }
+                alt={`${pokemon.name} official artwork`}
+                fill
+                className="object-contain drop-shadow-2xl"
+                priority
+              />
+            </div>
+          </div>
+        </header>
 
-          <div className="flex gap-2 mb-8">
+        {/* Content */}
+        <main
+          className="pb-12"
+          role="main"
+          style={{ marginTop: '-8px' }}
+        >
+          <div
+            className="bg-white shadow-xl"
+            style={{
+              borderTopLeftRadius: '8px',
+              borderTopRightRadius: '8px',
+              paddingTop: '140px',
+              paddingLeft: '8px',
+              paddingRight: '8px',
+              paddingBottom: '16px'
+            }}
+          >
+          {/* Type Badges */}
+          <div className="flex justify-center gap-2 mb-4">
             {pokemon.types.map((type) => (
               <span
                 key={type.type.name}
-                className="px-4 py-1 rounded-full text-sm font-semibold capitalize"
+                className="text-white text-sm font-semibold capitalize"
                 style={{
-                  backgroundColor: 'rgba(255, 255, 255, 0.3)',
-                  backdropFilter: 'blur(10px)',
+                  backgroundColor: getTypeColor(type.type.name),
+                  borderRadius: '10px',
+                  padding: '2px 8px',
                 }}
               >
                 {type.type.name}
               </span>
             ))}
           </div>
-        </div>
 
-        {/* Pokemon Image */}
-        <div className="relative flex justify-center pb-8">
-          <div className="relative w-64 h-64">
-            <Image
-              src={
-                pokemon.sprites.other?.['official-artwork']?.front_default ||
-                pokemon.sprites.front_default ||
-                ''
-              }
-              alt={`${pokemon.name} official artwork`}
-              fill
-              className="object-contain drop-shadow-2xl"
-              priority
-            />
-          </div>
-        </div>
+          {/* About Section */}
+          <h2
+            className="text-center text-xl font-bold mb-4"
+            style={{ color: typeColor }}
+          >
+            About
+          </h2>
 
-        {/* Decorative circles */}
-        <div
-          className="absolute top-4 right-4 w-32 h-32 rounded-full opacity-10"
-          style={{ backgroundColor: 'white' }}
-        ></div>
-        <div
-          className="absolute bottom-4 left-4 w-24 h-24 rounded-full opacity-10"
-          style={{ backgroundColor: 'white' }}
-        ></div>
-      </header>
-
-      {/* Content */}
-      <main
-        className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 pb-12"
-        role="main"
-      >
-        <div className="bg-white rounded-t-3xl shadow-xl p-6">
           {/* Stats */}
           <section aria-label="Pokemon stats" className="mb-8">
             <h2
@@ -223,8 +251,9 @@ export default async function PokemonDetailPage({ params }: PageProps) {
               </p>
             </div>
           </section>
-        </div>
-      </main>
+          </div>
+        </main>
+      </div>
     </div>
   );
 }
